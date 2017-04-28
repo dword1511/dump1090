@@ -18,7 +18,7 @@ export DUMP1090_VERSION=$(shell dpkg-parsechangelog | sed -n 's/^Version: /v/p')
 SRCNAME=$(shell dpkg-parsechangelog | sed -n 's/^Source: //p')
 
 override_dh_auto_build:
-	dh_auto_build -- 'EXTRACFLAGS=-DHTMLPATH=\"/usr/share/dump1090-mutability/html\" -DMODES_DUMP1090_VARIANT=\"$(SRCNAME)\"'
+	dh_auto_build -- 'EXTRACFLAGS=-DHTMLPATH=\"/usr/share/dump1090-mutability/html\" -DMODES_DUMP1090_VARIANT=\"$(SRCNAME)\" -DALLOW_AGGRESSIVE -DHAVE_RTL_BIAST'
 
 override_dh_install:
 	dh_install

@@ -274,6 +274,19 @@ static void convert_samples(void *iq,
 //
 // =============================== RTLSDR handling ==========================
 //
+#ifdef HAVE_RTL_BIAST
+// Undocumented/exported functions
+void rtlsdr_set_gpio_bit(rtlsdr_dev_t *dev, uint8_t gpio, int val);
+void rtlsdr_set_gpio_output(rtlsdr_dev_t *dev, uint8_t gpio);
+
+// Copied from rtlsdrblog's rtl-biast and modified for internal use
+static void rtlsdr_set_bias_tee(rtlsdr_dev_t *dev, int on) {
+    fprintf(stdout, "rtlsdr_set_bias_tee: %d.\n", on);
+    rtlsdr_set_gpio_output(dev, 0);
+    rtlsdr_set_gpio_bit(dev, 0, on);
+}
+#endif
+
 int modesInitRTLSDR(void) {
     int j;
     int device_count, dev_index = 0;
@@ -325,7 +338,7 @@ int modesInitRTLSDR(void) {
             free(gains);
             return -1;
         }
-        
+
         if (Modes.gain == MODES_MAX_GAIN) {
             int highest = -1;
             int i;
