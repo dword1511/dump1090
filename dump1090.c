@@ -387,8 +387,6 @@ int modesInitRTLSDR(void) {
 #ifdef HAVE_RTL_BIAST
     if (Modes.enable_rtlsdr_biast) {
         rtlsdr_set_bias_tee(Modes.dev, 1);
-    } else {
-        rtlsdr_set_bias_tee(Modes.dev, 0);
     }
 #endif
 
