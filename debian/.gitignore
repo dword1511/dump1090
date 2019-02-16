@@ -1,0 +1,5 @@
+*.log
+*.debhelper
+*.substvars
+/dump1090-mutability/
+/files

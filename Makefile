@@ -14,26 +14,30 @@ SHAREDIR=$(PREFIX)/share/$(PROGNAME)
 EXTRACFLAGS=-DHTMLPATH=\"$(SHAREDIR)\"
 endif
 
-CPPFLAGS+=-DMODES_DUMP1090_VERSION=\"$(DUMP1090_VERSION)\"
-CFLAGS+=-O2 -g -Wall -Werror -W -Wno-unknown-warning-option -Wno-format-truncation
+CPPFLAGS+=-pthread -DMODES_DUMP1090_VERSION=\"$(DUMP1090_VERSION)\"
+CFLAGS+=-pthread -O2 -g -Wall -Werror -W -Wno-unknown-warning-option -Wno-format-truncation
+LDFLAGS+=$(CFLAGS)
+#LDFLAGS+=-pthread
 LIBS=-lpthread -lm
-LIBS_RTL=`pkg-config --libs librtlsdr libusb-1.0`
+#LIBS_RTL=$(shell pkg-config --libs librtlsdr libusb-1.0)
+# pkg-config somehow messed up
+LIBS_RTL=-lrtlsdr -lusb-1.0
 CC=gcc
 
 UNAME := $(shell uname)
 
 ifeq ($(UNAME), Linux)
 LIBS+=-lrt
-CFLAGS+=-std=c11 -D_DEFAULT_SOURCE
+CFLAGS+=--std=c11 -D_DEFAULT_SOURCE
 endif
 ifeq ($(UNAME), Darwin)
 UNAME_R := $(shell uname -r)
 ifeq ($(shell expr "$(UNAME_R)" : '1[012345]\.'),3)
-CFLAGS+=-std=c11 -DMISSING_GETTIME -DMISSING_NANOSLEEP
+CFLAGS+=--std=c11 -DMISSING_GETTIME -DMISSING_NANOSLEEP
 COMPAT+=compat/clock_gettime/clock_gettime.o compat/clock_nanosleep/clock_nanosleep.o
 else
 # Darwin 16 (OS X 10.12) supplies clock_gettime() and clockid_t
-CFLAGS+=-std=c11 -DMISSING_NANOSLEEP -DCLOCKID_T
+CFLAGS+=--std=c11 -DMISSING_NANOSLEEP -DCLOCKID_T
 COMPAT+=compat/clock_nanosleep/clock_nanosleep.o
 endif
 endif
